@@ -37,6 +37,24 @@ class MyCustomFormState extends State<MyCustomForm> {
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
 
+  // Define the focus node.  To manage the lifecycle, create the FocusNode in
+  // the initState method, and clean it up in the dispose method.
+  FocusNode myFocusNode;
+  @override
+  void initState() {
+    super.initState();
+
+    myFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the focus node when the Form is disposed.
+    myFocusNode.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
@@ -46,6 +64,9 @@ class MyCustomFormState extends State<MyCustomForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextFormField(
+            decoration:  InputDecoration(
+              labelText:  'Enter your username'
+            ),
             validator: (value) {
               if (value.isEmpty) {
                 return 'Please enter some text';
@@ -68,8 +89,21 @@ class MyCustomFormState extends State<MyCustomForm> {
               child: Text('Submit'),
             ),
           ),
+          // The first text field is focused on as soon as the app starts.
+            TextField(
+              autofocus: true,
+            ),
+            // The second text field is focused on when a user taps the
+            // FloatingActionButton.
+            TextField(
+              focusNode: myFocusNode,
+            ),
         ],
+        
       ),
+      
+      
     );
+    
   }
 }
